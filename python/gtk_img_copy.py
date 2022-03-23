@@ -87,7 +87,7 @@ class Window(Gtk.ApplicationWindow):
         )
         dialog.set_default_size(800, 400)
 
-        response = dialog.run()
+        response = dialog.show()
         if response == Gtk.ResponseType.OK:
             print("Select clicked")
             print("Folder selected: " + dialog.get_filename())
@@ -191,27 +191,30 @@ class MyWindow(Window):
     def on_dir_clicked(self, widget):
         dialog = Gtk.FileChooserDialog(
             title="Please choose a folder",
-            parent=None,
             action=Gtk.FileChooserAction.SELECT_FOLDER,
         )
 
-        #dialog.add_buttons(
-        #    Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK
-        #)
+        dialog.add_buttons(
+            "Cancel", Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK
+        )
+        dialog.set_transient_for(self)
+        dialog.set_modal(True)
         dialog.set_default_size(600, 400)
-
-        response = dialog.show()
+        dialog.connect('response', self.on_dialog_response)
+        dialog.show()
+        
+    def on_dialog_response(self, dialog, response):
         if response == Gtk.ResponseType.OK:
             print("Select clicked")
             print("Folder selected: " + dialog.get_filename())
-            print("btn label: " + widget.get_label())
-            if widget.get_label() == "Input(DIR)":
-                self.text_in_path.set_text(dialog.get_filename())
-                print("input label")
-            elif widget.get_label() == "Output(DIR)":
-                self.text_out_path.set_text(dialog.get_filename())
-                print("output label")
-
+            
+            #print("btn label: " + widget.get_label())
+            #if widget.get_label() == "Input(DIR)":
+            #    self.text_in_path.set_text(dialog.get_filename())
+            #    print("input label")
+            #elif widget.get_label() == "Output(DIR)":
+            #    self.text_out_path.set_text(dialog.get_filename())
+            #    print("output label")
         elif response == Gtk.ResponseType.CANCEL:
             print("Cancel clicked")
 
